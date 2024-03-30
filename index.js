@@ -9,8 +9,7 @@ app.use(express.json());
 
 
 // Mongo DB Credentials
-const { MongoClient, ServerApiVersion } = require('mongodb');
-
+const { MongoClient, ServerApiVersion ,ObjectId} = require('mongodb');
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -40,6 +39,14 @@ async function run() {
       console.log('new user', users);
       const result = await usersCollection.insertOne(users);
       res.send(result);
+    })
+
+    // delete single data from db
+    app.delete('/users/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await usersCollection.deleteOne(query);
+      res.send(result)
     })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
